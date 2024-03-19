@@ -1,5 +1,5 @@
 const User = require("../modules/user-module");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const { use } = require("../routes/workout");
@@ -20,8 +20,8 @@ const loginUser = async (req, res) => {
     }
     if (!validator.isEmail(email)) {
       return res.status(400).json({ error: "Email is not valid" });
-    } 
-    
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -86,10 +86,10 @@ const signeupUser = async (req, res) => {
     return res.status(400).json({ error: "This Email Already Exists" });
   }
 
-  // find if username is used 
-  const Used_Username = await User.findOne({ username }) 
+  // find if username is used
+  const Used_Username = await User.findOne({ username });
 
-  if(Used_Username) {
+  if (Used_Username) {
     return res.status(400).json({ error: "This Username Already Used" });
   }
 
@@ -100,7 +100,7 @@ const signeupUser = async (req, res) => {
   //try to create the user and err management
 
   try {
-    const user = await User.create({ username , email, password: hash });
+    const user = await User.create({ username, email, password: hash });
 
     // create a token
     const token = Create_Token(user._id);
